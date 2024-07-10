@@ -1,0 +1,53 @@
+Queries
+/* Q1 Using Single Block query*/
+select s.sname
+from student s, class c, enrolled e, faculty f
+where f.fname='Rakesh' and f.fid=c.fid and c.cname=e.cname and e.snum=s.snum and
+s.lvl='Jr';
+
+
+/* Q1 Using Nested query*/
+select sname from student
+where lvl='Jr' and snum in ( select snum from enrolled
+where cname in( select cname from class
+where fid in ( select fid from faculty
+where fname='Rakesh')));
+
+
+/* Q2 Using Single Block query*/
+select max(age)
+from student s, class c, enrolled e, faculty f
+where f.fid=c.fid and c.cname=e.cname and e.snum=s.snum and (major='History' OR
+f.fname='Ravi');
+
+/* Q2 Using Nested query*/
+select max(s.age )
+from student s
+where major='History' OR snum in (select snum from enrolled
+where cname in(select cname from class
+where fid in (select fid from faculty
+where fname=’ravi’)));
+
+
+/* Q3 */
+select Distinct S.Sname from Student S where S.Snum in
+(Select E1.Snum
+from Enrolled E1,Enrolled E2,Class C1,Class C2
+where E1.Cname=C1.Cname and E2.Cname=C2.Cname and E1.Snum=E2.Snum and
+E1.Cname<>E2.Cname and C1.Meets_at=C2.Meets_at);
+
+
+/* Nested Q4 */
+Select Distinct F.Fname , count(*) as CourseCount
+from CLass C , Faculty F
+where C.Fid = F.Fid and C.FID not in (Select Fid
+from Class
+where Room IN (Select Room
+from Class where Room != 'r128'))
+group by F.Fname;
+
+
+/* Q5 */
+select lvl, avg(age)
+from student
+group by lvl;
