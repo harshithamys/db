@@ -1,0 +1,32 @@
+Queries
+/* Q1 */
+select distinct aname
+from aircraft a,employees e,certified c
+where a.aid=c.aid and e.eid=c.eid and e.salary>80000;
+
+
+/* Q2 */
+select e.eid , max(cruisingrange)
+from employees e, certified c, aircraft a
+where e.eid=c.eid and a.aid=c.aid
+group by e.eid
+having count(*)>3;
+
+
+/* Q3 */
+select a.aname , avg(salary)
+from employees e ,certified c, aircraft a
+where c.eid=e.eid and a.aid=c.aid and cruisingrange>1000
+group by a.aname;
+
+
+/* Q4 */
+select ename from employees
+where eid in (select eid from certified where aid in
+( select aid from aircraft where cruisingrange>=3000 and aname<>'boeing'));
+
+
+/* Q5 */
+select eid,ename,salary from employees
+where salary> (select avg(salary) from employees e, certified c where e.eid = c.eid)
+and eid not in (select eid from certified);
