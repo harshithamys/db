@@ -1,0 +1,42 @@
+Queries
+/* Q1 using union*/
+select p.pno
+from employee e, department d, project p
+where p.dno=d.dno and d.manager_ssn=e.ssn and e.name='Scott'
+union
+select w.pno
+from employee e, works_on w
+where e.ssn=w.ssn and e.name='Scott'
+
+
+/* Q2 */
+select name, 1.1* salary as raised_salary
+from employee e, project p, works_on w
+where p.pname='IOT' and p.pno=w.pno and w.ssn=e.ssn
+
+
+/* Q3 */
+select sum(Salary) as sumsal, avg(Salary) as avgsal, min(Salary) as minsal, max(Salary) as
+maxsal
+from Employee e, Department d
+where e.dno=d.dno and d.Dname='Accounts';
+
+
+/* Q4 using NOT Exists*/
+select e.name
+from Employee e
+where not exists(
+(select PNO from Project where DNO=5)
+minus
+(select PNO from Works_On where e.SSN=SSN)
+);
+
+
+/* Q5 */
+select e.dno, count(*) as Employee_count
+from employee e, department d
+where e.dno=d.dno and salaray> 600000 and e.dno in ( select dno
+from employee
+group by dno
+having count(*)>5)
+group by e.dno ;
