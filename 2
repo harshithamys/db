@@ -1,0 +1,49 @@
+/* Q1 */
+Select cust_name
+from customer
+where grade > (Select avg(grade)
+from customer
+where city='Bangalore');
+
+
+/* Q2 */
+select s.salesman_id, s.name ,count(*) as no_of_customers
+from salesman s, customer c
+where s.salesman_id=c.salesman_id
+group by s.salesman_id, s.name
+having count(*)>1;
+
+
+/* Q3 using UNION */
+select s.name , c.cust_name, s.city
+from salesman s, customer c
+where s.city=c.city
+union
+select s.name, c.cust_name , 'NO MATCH'
+from salesman s, customer c
+where s.city not in (select city from customer)
+
+
+/* Q4 using Group by */
+create view MAX_AMT_ODR as
+Select o.ord_date, s.salesman_id, s.name
+from salesman s, orders o
+where s.salesman_id=o.salesman_id and o.purchase_amt in (select max(purchase_amt)
+from orders
+group by ord_date)
+select * from MAX_AMT_ODR;
+
+
+/* Q4 using correlated queries */
+create view salesman_order as
+select b.Ord_Date, a.Salesman_ID,Name
+from Salesman a, Orders B
+where A.Salesman_ID=b.Salesman_ID and b.Purchase_Amt= (select max(Purchase_Amt)
+from Orders C
+where C.Ord_Date=b.Ord_Date);
+select * from salesman_order;
+
+
+/* Q5 */
+delete from salesman
+where salesman_id=1000;
